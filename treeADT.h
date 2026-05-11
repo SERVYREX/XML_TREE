@@ -61,23 +61,26 @@ private:
         return count;
     }
 
-    // Funcion auxiliar para imprimir el arbol recursivamente
-    void printTreeHelper(Node* v, int depth) const {
-        if (v == nullptr) return;
-        
-        // Imprimir indentación
+
+  // Funciones para el pepe
+void listar(Node* v, int depth) const {
+    if (v == nullptr) return;
+
+    // Imprimir solo si contiene "ID"
+    if (v->element.find("ID: ") != std::string::npos ||(v->element.find("Rating_Promedio: ") != std::string::npos)|| (v->element.find("Titulo: ") != std::string::npos)){
+
         for (int i = 0; i < depth; ++i) {
             std::cout << "  ";
         }
-        
-        // Imprimir el elemento
-        std::cout << "├─ " << v->element << "\n";
-        
-        // Imprimir hijos
-        for (Node* child : v->children) {
-            printTreeHelper(child, depth + 1);
-        }
+
+        std::cout <<v->element << "\n";
     }
+
+    // Recorrer hijos SIEMPRE
+    for (Node* child : v->children) {
+        listar(child, depth + 1);
+    }
+}
 
 public:
     Tree(){
@@ -196,6 +199,41 @@ public:
             std::cout << "El arbol está vacío.\n";
             return;
         }
-        printTreeHelper(_root, 0);
+        listar(_root, 0);
     }
+
+
+
+void borrar_ratings(float r) {
+
+    std::vector<Position> pos = positions();
+
+    std::vector<Position> eliminar;
+
+    for (Position p : pos) {
+
+        std::string texto = p.element();
+
+        if (texto.find("Rating_Promedio:") != std::string::npos) {
+
+            size_t inicio = texto.find("Rating_Promedio:") + 17;
+
+            float rating = std::stof(texto.substr(inicio));
+
+            if (rating <= r) {
+
+                Position padre = parent(p);
+
+                if (!isRoot(padre)) {
+                    eliminar.push_back(padre);
+                }
+            }
+        }
+    }
+
+    for (Position p : eliminar) {
+        remove(p);
+    }
+}
+  
 };

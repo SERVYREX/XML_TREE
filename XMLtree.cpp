@@ -11,8 +11,8 @@ int main() {
     Position posRaizGlobal = Arbol.addRoot("Biblioteca_Completa");
 
     // Ruta a tu carpeta con los 10000 XML
-    std::string ruta_carpeta = "C:\\Users\\alfon\\OneDrive\\Escritorio\\VISUAL\\c++\\Entregable2\\books_xml"; 
-    
+    std::string ruta_carpeta = "../books_xml";
+
     int archivosProcesados = 0;
 
     // Iteramos por cada archivo dentro de la carpeta
@@ -51,11 +51,20 @@ int main() {
                     Position posLibrito = Arbol.addChild(posSimilares, "LibroSimilar");
                     Arbol.addChild(posLibrito, "ISBN: " + std::string(libro.child_value("isbn")));
                     Arbol.addChild(posLibrito, "Ano: " + std::string(libro.child_value("publication_year")));
-                    Arbol.addChild(posLibrito, "Titulo: " + std::string(libro.child_value("title")));
+                    Arbol.addChild(posLibrito, "titulo: " + std::string(libro.child_value("title")));
                 }
                 archivosProcesados++;
             }
         }
     }
+    // 4. Resumen final
+    std::cout << "\n=== ARBOL CONSTRUIDO EXITOSAMENTE ===\n";
+    std::cout << "Libros principales procesados: " << archivosProcesados << "\n";
+    std::cout << "Total de nodos en el arbol: " << Arbol.size() << "\n\n";
+    
+    // 5. Mostrar la estructura del árbol
+    std::cout << "=== ESTRUCTURA DEL ARBOL ===\n";
+   Arbol. borrar_ratings(4.76);
+    Arbol.printTree();
     return 0;
 }
