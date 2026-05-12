@@ -40,7 +40,7 @@ class Tree {
 private:
   Node* _root;
   int Tsize;
-
+  static std::vector<Position> pos
   // Funcion recursiva auxiliar para recolectar posiciones (recorrido pre-order)
   void preorderPositions(Node* v, std::vector<Position>& pos) const {
     if (v == nullptr) return;
@@ -251,7 +251,7 @@ public:
 
 
   
-  bool precursores(std::string id){
+  bool esPrecursor(std::string id){
     std::vector<Position> pos = positions();
     Position libro_id;
     std::string year;
@@ -276,7 +276,11 @@ public:
 	  for(Position atribute : children(book)){
 	    if(atribute.element() == "year"){
 	      std::string similarYear = children(atribute)[0].element();
-	      if(similarYear == "" || std::stoi(year) > std::stoi(similarYear)){
+	      if(similarYear == "" || year == ""){
+		return false;
+	      }
+	      if( std::stoi(year) >= std::stoi(similarYear)){
+
 		return false;
 	      }
 	    }
@@ -284,7 +288,17 @@ public:
 	}
       }
     }
+    std::cout<< id <<std::endl;
     return true;
+  }
+
+  void test(){
+    std::vector<Position> pos = positions();
+    for(Position p : pos){
+      if(p.element()== "ID"){
+	esPrecursor(children(p)[0].element());
+      }	
+    }   
   }
 };
 
