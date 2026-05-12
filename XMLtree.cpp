@@ -41,7 +41,7 @@ int main() {
                 Position posIsbn = Arbol.addChild(posLibro, "ISBN");
                 Arbol.addChild(posIsbn, std::string(main_book.child_value("isbn")));
 
-                Position posAno = Arbol.addChild(posLibro, "Ano");
+                Position posAno = Arbol.addChild(posLibro, "year");
                 Arbol.addChild(posAno, std::string(main_book.child_value("publication_year")));
 
                 Position posIdioma = Arbol.addChild(posLibro, "Idioma");
@@ -87,7 +87,8 @@ int main() {
     
     // 5. Mostrar la estructura del árbol
     std::cout << "=== ESTRUCTURA DEL ARBOL ===\n";
-    Arbol.borrar_ratings(4.70);
-    Arbol.printTree();
+    if(Arbol.precursores("1")){
+      std::cout<< "SEBAA LA CASSAA\n";
+    }
     return 0;
 }

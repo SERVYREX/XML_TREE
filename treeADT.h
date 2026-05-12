@@ -3,7 +3,7 @@
 #include <string>
 #include <stdexcept>
 #include <algorithm>
-
+#include <cstdlib>
 class Node {
 public:
   std::string element;
@@ -249,5 +249,42 @@ public:
 }
 
 
+
   
+  bool precursores(std::string id){
+    std::vector<Position> pos = positions();
+    Position libro_id;
+    std::string year;
+    
+    for(Position p: pos){
+      if( p.element() == id){
+	if(parent(p).element() == "ID"){
+	
+	libro_id = parent(parent(p));
+	break;
+	}
+      }
+    }
+    for(Position pos: children(libro_id)){
+      if(pos.element() == "year"){
+	year = children(pos)[0].element();
+      }
+    }
+     for(Position pos: children(libro_id)){
+      if(pos.element() == "LibrosSimilares"){
+	for(Position book : children(pos)){
+	  for(Position atribute : children(book)){
+	    if(atribute.element() == "year"){
+	      std::string similarYear = children(atribute)[0].element();
+	      if(similarYear == "" || std::stoi(year) > std::stoi(similarYear)){
+		return false;
+	      }
+	    }
+	  }	
+	}
+      }
+    }
+    return true;
+  }
 };
+
