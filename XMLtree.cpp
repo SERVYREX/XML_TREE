@@ -87,6 +87,8 @@ int main() {
     
     // 5. Mostrar la estructura del árbol
     std::cout << "=== ESTRUCTURA DEL ARBOL ===\n";
+    Arbol.borrar_ratings(4.5);
+    Arbol.printTree();
     Arbol.test();
     return 0;
 }

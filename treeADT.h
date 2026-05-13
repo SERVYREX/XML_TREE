@@ -16,6 +16,14 @@ public:
   }
 };
 
+
+
+
+
+
+
+
+
 class Position {
 private:
   Node* v;
@@ -36,11 +44,22 @@ public:
   }
 };
 
+
+
+
+
+
+
+
+
+
+
 class Tree {
 private:
   Node* _root;
   int Tsize;
-  static std::vector<Position> pos
+  std::vector<Position> posiciones;
+  bool arbol_modificado; 
   // Funcion recursiva auxiliar para recolectar posiciones (recorrido pre-order)
   void preorderPositions(Node* v, std::vector<Position>& pos) const {
     if (v == nullptr) return;
@@ -97,6 +116,7 @@ public:
   Tree(){
     _root = nullptr;
     Tsize = 0;
+    arbol_modificado = true;
   }
 
   ~Tree() {
@@ -168,6 +188,7 @@ public:
     if (!isEmpty()) throw std::runtime_error("El arbol ya tiene raiz");
     _root = new Node(e);
     Tsize++;
+    arbol_modificado = true;
     return Position(_root);
   }
 
@@ -176,6 +197,7 @@ public:
     Node* child = new Node(e, v);
     v->children.push_back(child);
     Tsize++;
+    arbol_modificado = true;
     return Position(child);
   }
 
@@ -202,6 +224,7 @@ public:
     // Eliminar recursivamente el nodo y sus descendientes
     int removed = removeSubtree(v);
     Tsize -= removed;
+    arbol_modificado = true;
   }
 
   // Imprime el arbol
@@ -213,6 +236,13 @@ public:
     listar(_root, 0);
   }
 
+  
+  void actualizarArbol() {
+    if (arbol_modificado) {
+      posiciones = positions();
+      arbol_modificado = false; 
+    }
+  }
 
   void borrar_ratings(float r) {
 
@@ -251,50 +281,55 @@ public:
 
 
   
-  bool esPrecursor(std::string id){
-    std::vector<Position> pos = positions();
+bool esPrecursor(std::string id) {
+  actualizarArbol();
+  
+    // Ya no llamamos a positions() aquí. Usamos el 'pos' que nos pasaron.
     Position libro_id;
     std::string year;
     
-    for(Position p: pos){
+    for(Position p: posiciones){
       if( p.element() == id){
-	if(parent(p).element() == "ID"){
-	
-	libro_id = parent(parent(p));
-	break;
-	}
+        if(parent(p).element() == "ID"){
+          libro_id = parent(parent(p));
+          break;
+        }
       }
     }
-    for(Position pos: children(libro_id)){
-      if(pos.element() == "year"){
-	year = children(pos)[0].element();
-      }
-    }
-     for(Position pos: children(libro_id)){
-      if(pos.element() == "LibrosSimilares"){
-	for(Position book : children(pos)){
-	  for(Position atribute : children(book)){
-	    if(atribute.element() == "year"){
-	      std::string similarYear = children(atribute)[0].element();
-	      if(similarYear == "" || year == ""){
-		return false;
-	      }
-	      if( std::stoi(year) >= std::stoi(similarYear)){
 
-		return false;
-	      }
-	    }
-	  }	
-	}
+    // Buscamos el año del libro
+    for(Position p: children(libro_id)){
+      if(p.element() == "year"){
+        year = children(p)[0].element();
       }
     }
-    std::cout<< id <<std::endl;
+
+    // Comparamos con los libros similares
+    for(Position p: children(libro_id)){
+      if(p.element() == "LibrosSimilares"){
+        for(Position book : children(p)){
+          for(Position atribute : children(book)){
+            if(atribute.element() == "year"){
+              std::string similarYear = children(atribute)[0].element();
+              if(similarYear == "" || year == ""){
+                return false;
+              }
+              if( std::stoi(year) >= std::stoi(similarYear)){
+                return false;
+              }
+            }
+          }    
+        }
+      }
+    }
+    std::cout << id << std::endl;
     return true;
   }
 
+  
   void test(){
-    std::vector<Position> pos = positions();
-    for(Position p : pos){
+    actualizarArbol();
+    for(Position p : posiciones){
       if(p.element()== "ID"){
 	esPrecursor(children(p)[0].element());
       }	
