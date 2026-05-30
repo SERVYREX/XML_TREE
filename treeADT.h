@@ -1,9 +1,14 @@
+#ifndef TREEADT_H
+#define TREEADT_H
+
 #include <iostream>
 #include <vector>
 #include <string>
 #include <stdexcept>
 #include <algorithm>
 #include <cstdlib>
+
+// Nodo del árbol: contiene un elemento y referencias a padre/hijos
 class Node {
 public:
   std::string element;
@@ -16,14 +21,7 @@ public:
   }
 };
 
-
-
-
-
-
-
-
-
+// Representa una posición en el árbol (abstrae el puntero a Node)
 class Position {
 private:
   Node* v;
@@ -44,23 +42,14 @@ public:
   }
 };
 
-
-
-
-
-
-
-
-
-
-
+// Arbol general con nodos que pueden tener cualquier número de hijos
 class Tree {
 private:
   Node* _root;
   int Tsize;
   std::vector<Position> posiciones;
   bool arbol_modificado; 
-  // Funcion recursiva auxiliar para recolectar posiciones (recorrido pre-order)
+  // Recorre posiciones mediante recorrido pre-order
   void preorderPositions(Node* v, std::vector<Position>& pos) const {
     if (v == nullptr) return;
     pos.push_back(Position(v));
@@ -69,7 +58,7 @@ private:
     }
   }
 
-  // Funcion auxiliar para eliminar recursivamente un nodo y sus descendientes
+  // Elimina un nodo y todos sus descendientes recursivamente
   int removeSubtree(Node* v) {
     if (v == nullptr) return 0;
     int count = 1; // contar este nodo
@@ -80,29 +69,30 @@ private:
     return count;
   }
 
-
- void listar(Node* v, int depth) const {
-
+  // Recorre el arbol en pre-order e imprime solo datos relevantes de libros
+  // Parametros:
+  //   - v: puntero al nodo actual
+  //   - depth: profundidad actual para formatear indentacion
+  // Comportamiento:
+  //   - Filtra y muestra solo: ID, Titulo y Rating promedio
+  //   - Cada categoria se imprime con su valor
+  //   - La indentacion muestra la estructura jerarquica
+  void listar(Node* v, int depth) const {
     if (v == nullptr) return;
-
-    // Categorias que queremos mostrar
-    if (v->element == "ID" ||
-        v->element == "Titulo" ||
-        v->element == "Rating_Promedio") {
-
+    // Filtrar: mostrar solo categorias de interes
+    if (v->element == "ID" || v->element == "Titulo" || v->element == "Rating_Promedio") {
         // imprimir indentacion
         for (int i = 0; i < depth; ++i) {
             std::cout << "  ";
         }
 
-        // imprimir nombre categoria
+        // imprimir nombre dato
         std::cout << v->element;
 
         // imprimir valor si existe hijo
         if (!v->children.empty()) {
             std::cout << ": " << v->children[0]->element;
         }
-
         std::cout << "\n";
     }
 
@@ -113,27 +103,31 @@ private:
 }
 
 public:
+  // Constructor: inicializa arbol vacio
   Tree(){
     _root = nullptr;
     Tsize = 0;
     arbol_modificado = true;
   }
 
+  // Destructor: libera memoria del arbol
   ~Tree() {
     if (_root != nullptr) {
       removeSubtree(_root);
     }
   }
 
+  // Retorna numero total de nodos
   int size() const {
     return Tsize;
   }
 
+  // Verifica si el arbol esta vacio
   bool isEmpty() const {
     return Tsize == 0;
   }
 
-  // Retorna un vector con los elementos (strings)
+  // Retorna elementos de todos los nodos en pre-order
   std::vector<std::string> elements() const {
     std::vector<std::string> elems;
     std::vector<Position> pos = positions();
@@ -143,21 +137,24 @@ public:
     return elems;
   }
 
-  // Retorna un vector con las posiciones
+  // Retorna todas las posiciones del arbol en pre-order
   std::vector<Position> positions() const {
     std::vector<Position> pos;
     preorderPositions(_root, pos);
     return pos;
   }
 
+  // Retorna la raíz del arbol
   Position root() const {
     return Position(_root);
   }
 
+  // Retorna el padre de una posición
   Position parent(Position p) const {
     return Position(p.getNode()->parent);
   }
 
+  // Retorna los hijos de una posición
   std::vector<Position> children(Position p) const {
     std::vector<Position> childPositions;
     for (Node* child : p.getNode()->children) {
@@ -166,24 +163,29 @@ public:
     return childPositions;
   }
 
+  // Verifica si es nodo interno (tiene hijos)
   bool isInternal(Position p) const {
-    return !p.getNode()->children.empty(); // Es interno si TIENE hijos
+    return !p.getNode()->children.empty();
   }
 
+  // Verifica si es nodo hoja (sin hijos)
   bool isExternal(Position p) const {
-    return p.getNode()->children.empty(); // Es externo si NO TIENE hijos
+    return p.getNode()->children.empty();
   }
 
+  // Verifica si es la raíz del árbol
   bool isRoot(Position p) const {
     return p.getNode() == _root;
   }
 
+  // Reemplaza el elemento de una posición
   std::string replace(Position p, std::string o) {
     std::string oldElement = p.element();
     p.getNode()->element = o;
-    return oldElement; // Retorna el string que fue reemplazado
+    return oldElement;
   }
 
+  // Crea la raíz del árbol
   Position addRoot(std::string e) {
     if (!isEmpty()) throw std::runtime_error("El arbol ya tiene raiz");
     _root = new Node(e);
@@ -192,6 +194,7 @@ public:
     return Position(_root);
   }
 
+  // Agrega un hijo a una posición
   Position addChild(Position p, std::string e) {
     Node* v = p.getNode();
     Node* child = new Node(e, v);
@@ -201,7 +204,7 @@ public:
     return Position(child);
   }
 
-  // Elimina un nodo y todos sus descendientes del arbol
+  // Elimina un nodo y sus descendientes
   void remove(Position p) {
     Node* v = p.getNode();
         
@@ -227,7 +230,7 @@ public:
     arbol_modificado = true;
   }
 
-  // Imprime el arbol
+  // Imprime el árbol mostrando categorías relevantes
   void printTree() const {
     if (isEmpty()) {
       std::cout << "El arbol está vacío.\n";
@@ -236,7 +239,7 @@ public:
     listar(_root, 0);
   }
 
-  
+  // Actualiza caché de posiciones si el árbol ha sido modificado
   void actualizarArbol() {
     if (arbol_modificado) {
       posiciones = positions();
@@ -244,96 +247,91 @@ public:
     }
   }
 
+  // Proposito: Elimina todos los nodos libro cuyo rating sea <= r
+  // Parametro:
+  //   - r: float, Libros con rating <= r seran eliminados
   void borrar_ratings(float r) {
-
+    // Obtener todas las posiciones del arbol
     std::vector<Position> pos = positions();
     std::vector<Position> eliminar;
 
+    // Recorrer posiciones y filtrar libros a eliminar
     for (Position p : pos) {
-
-      // Buscar el nodo categoria
+      // Buscar nodos de categoria Rating_Promedio
       if (p.element() == "Rating_Promedio") {
+        std::vector<Position> hijo = children(p);
+        float rating = std::stof(hijo[0].element());  // Extraer valor del rating
 
-	std::vector<Position> hijo = children(p);
-
-	float rating = std::stof(hijo[0].element());
-
-	if (rating <= r) {
-
-	  // padre del rating = libro
-	  Position libro = parent(p);
-
-	  if (!isRoot(libro)) {
-	    eliminar.push_back(libro);
-	  }
-	}
-                
-      }
-    }
- 
-
-  // eliminar despues para evitar invalidar recorridos
-  for (Position p : eliminar) {
-    remove(p);
-  }
-}
-
-
-
-  
-bool esPrecursor(std::string id) {
-  actualizarArbol();
-  
-    // Ya no llamamos a positions() aquí. Usamos el 'pos' que nos pasaron.
-    Position libro_id;
-    std::string year;
-    
-    for(Position p: posiciones){
-      if( p.element() == id){
-        if(parent(p).element() == "ID"){
-          libro_id = parent(parent(p));
-          break;
+        // Comparar con r
+        if (rating <= r) {
+          // Obtener nodo padre (libro que contiene este rating)
+          Position libro = parent(p);
+          if (!isRoot(libro)) {
+            eliminar.push_back(libro); // Marcar libro para eliminacion
+          }
         }
       }
     }
-
-    // Buscamos el año del libro
-    for(Position p: children(libro_id)){
-      if(p.element() == "year"){
-        year = children(p)[0].element();
-      }
+    // Eliminar libros despues del recorrido
+    for (Position p : eliminar) {
+      remove(p);
     }
-
-    // Comparamos con los libros similares
-    for(Position p: children(libro_id)){
-      if(p.element() == "LibrosSimilares"){
-        for(Position book : children(p)){
-          for(Position atribute : children(book)){
-            if(atribute.element() == "year"){
-              std::string similarYear = children(atribute)[0].element();
-              if(similarYear == "" || year == ""){
-                return false;
-              }
-              if( std::stoi(year) >= std::stoi(similarYear)){
-                return false;
-              }
-            }
-          }    
-        }
-      }
-    }
-    std::cout << id << std::endl;
-    return true;
   }
 
-  
-  void test(){
+  void Precursores() {
     actualizarArbol();
+    
     for(Position p : posiciones){
-      if(p.element()== "ID"){
-	esPrecursor(children(p)[0].element());
-      }	
+      if(p.element() == "ID"){
+        std::string id = children(p)[0].element();
+        Position libro_id;
+        std::string year;
+        
+        // Encontrar el nodo del libro correspondiente a este ID
+        for(Position pos: posiciones){
+          if(pos.element() == id){
+            if(parent(pos).element() == "ID"){
+              libro_id = parent(parent(pos));
+              break;
+            }
+          }
+        }
+
+        // Buscamos el año del libro
+        for(Position pos: children(libro_id)){
+          if(pos.element() == "year"){
+            year = children(pos)[0].element();
+          }
+        }
+
+        // Comparamos con los libros similares
+        bool esPrecursorFlag = true;
+        for(Position pos: children(libro_id)){
+          if(pos.element() == "LibrosSimilares"){
+            for(Position book : children(pos)){
+              for(Position atribute : children(book)){
+                if(atribute.element() == "year"){
+                  std::string similarYear = children(atribute)[0].element();
+                  if(similarYear == "" || year == ""){
+                    esPrecursorFlag = false;
+                    break;
+                  }
+                  if(std::stoi(year) >= std::stoi(similarYear)){
+                    esPrecursorFlag = false;
+                    break;
+                  }
+                }
+              }
+              if(!esPrecursorFlag) break;
+            }
+            if(!esPrecursorFlag) break;
+          }
+        }
+        if(esPrecursorFlag){
+          std::cout << id << std::endl;
+        }
+      }
     }   
   }
 };
-
+#endif
