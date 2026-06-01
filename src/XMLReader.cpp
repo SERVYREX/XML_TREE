@@ -1,4 +1,4 @@
-#include "XMLReader.h"
+#include "../include/XMLReader.h"
 #include <filesystem>
 #include <iostream>
 
@@ -11,7 +11,7 @@ void XMLReader::setCarpetaRuta(const std::string& ruta) {
 }
 
 void XMLReader::procesarLibroPrincipal(pugi::xml_node main_book, Tree& arbol, Position posLibro, [[maybe_unused]] int numeroLibro) {
-    // Metemos los datos: Primero creamos el nodo de la categoría y luego le añadimos el valor como hijo
+    // Incorporamos los datos: Primero creamos el nodo de la categoría y luego le añadimos el valor como hijo
     Position posId = arbol.addChild(posLibro, "ID");
     arbol.addChild(posId, std::string(main_book.child_value("id")));
 

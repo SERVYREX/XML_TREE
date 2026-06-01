@@ -69,38 +69,6 @@ private:
     return count;
   }
 
-  // Recorre el arbol en pre-order e imprime solo datos relevantes de libros
-  // Parametros:
-  //   - v: puntero al nodo actual
-  //   - depth: profundidad actual para formatear indentacion
-  // Comportamiento:
-  //   - Filtra y muestra solo: ID, Titulo y Rating promedio
-  //   - Cada categoria se imprime con su valor
-  //   - La indentacion muestra la estructura jerarquica
-  void listar(Node* v, int depth) const {
-    if (v == nullptr) return;
-    // Filtrar: mostrar solo categorias de interes
-    if (v->element == "ID" || v->element == "Titulo" || v->element == "Rating_Promedio") {
-        // imprimir indentacion
-        for (int i = 0; i < depth; ++i) {
-            std::cout << "  ";
-        }
-
-        // imprimir nombre dato
-        std::cout << v->element;
-
-        // imprimir valor si existe hijo
-        if (!v->children.empty()) {
-            std::cout << ": " << v->children[0]->element;
-        }
-        std::cout << "\n";
-    }
-
-    // seguir recorriendo
-    for (Node* child : v->children) {
-        listar(child, depth + 1);
-    }
-}
 
 public:
   // Constructor: inicializa arbol vacio
@@ -230,14 +198,6 @@ public:
     arbol_modificado = true;
   }
 
-  // Imprime el árbol mostrando categorías relevantes
-  void printTree() const {
-    if (isEmpty()) {
-      std::cout << "El arbol está vacío.\n";
-      return;
-    }
-    listar(_root, 0);
-  }
 
   // Actualiza caché de posiciones si el árbol ha sido modificado
   void actualizarArbol() {
@@ -246,6 +206,25 @@ public:
       arbol_modificado = false; 
     }
   }
+
+  // Recorre el árbol en pre-order e imprime solo los IDS de cada libro
+  void listar() const {
+    // Obtenemos todas las posiciones del árbol (ya vienen en pre-order)
+    std::vector<Position> pos = positions();
+    
+    for (Position p : pos) {
+      // Filtramos para encontrar solo los nodos de categoría "ID"
+      if (p.element() == "ID") {
+        // El valor del ID está en el primer hijo del nodo
+        if (!p.getNode()->children.empty()) {
+          std::cout << p.getNode()->children[0]->element << "\n";
+        }
+      }
+    }
+  }
+
+
+
 
   // Proposito: Elimina todos los nodos libro cuyo rating sea <= r
   // Parametro:
