@@ -2,7 +2,7 @@
 #define XMLREADER_H
 
 #include "../pugixml/pugixml.hpp"
-#include "../treeADT.h"
+#include "TreeADT.h"
 #include <string>
 
 class XMLReader {

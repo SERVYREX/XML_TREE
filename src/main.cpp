@@ -1,10 +1,11 @@
 #include "../pugixml/pugixml.hpp"
-#include "../treeADT.h"
+#include "../include/TreeADT.h"
 #include "../include/XMLReader.h"
+#include "../include/BookTree.h"
 #include <iostream>
 
 int main() {
-    Tree Arbol;
+    BookTree Arbol;
     Position posRaizGlobal = Arbol.addRoot("Biblioteca_Completa");
 
     // Crear lector de XML y cargar los libros
@@ -12,7 +13,7 @@ int main() {
     lector.cargarLibrosDesdeFolder(Arbol, posRaizGlobal);
 
     //Arbol.Precursores();
-    Arbol.borrar_ratings(4.7);
-    Arbol.listar();
+    //Arbol.borrar_ratings(4.7);
+    //Arbol.listar();
     return 0;
 }
