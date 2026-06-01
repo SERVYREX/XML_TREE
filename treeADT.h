@@ -284,19 +284,10 @@ public:
     for(Position p : posiciones){
       if(p.element() == "ID"){
         std::string id = children(p)[0].element();
-        Position libro_id;
         std::string year;
-        
-        // Encontrar el nodo del libro correspondiente a este ID
-        for(Position pos: posiciones){
-          if(pos.element() == id){
-            if(parent(pos).element() == "ID"){
-              libro_id = parent(parent(pos));
-              break;
-            }
-          }
-        }
 
+	Position libro_id = parent(p);
+	
         // Buscamos el año del libro
         for(Position pos: children(libro_id)){
           if(pos.element() == "year"){
