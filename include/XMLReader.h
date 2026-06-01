@@ -14,7 +14,8 @@ private:
     void procesarLibrosSimilares(pugi::xml_document& doc, Tree& arbol, Position posSimilares);
 
 public:
-    XMLReader(const std::string& ruta = "../books_xml");
+    
+    XMLReader(const std::string& ruta = "../Data_XML");
     int cargarLibrosDesdeFolder(Tree& arbol, Position posRaiz);
     void setCarpetaRuta(const std::string& ruta);
 };

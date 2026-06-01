@@ -42,9 +42,10 @@ public:
     }
 };
 
+
 // Arbol general con nodos que pueden tener cualquier número de hijos
 class Tree {
-protected: // Cambiado a protected para que la clase extendida acceda sin cambiar la lógica interna
+protected: 
     Node* _root;
     int Tsize;
     std::vector<Position> posiciones;

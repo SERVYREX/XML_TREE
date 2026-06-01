@@ -9,14 +9,14 @@ public:
     // Mismos constructores heredados de Tree
     using Tree::Tree;
 
-    // Recorre el árbol en pre-order e imprime solo los IDS de cada libro
+    // Recorre el árbol en pre-order e imprime solo los IDS de cada libro principal
     void listar() const;
 
-    // Elimina todos los nodos libro cuyo rating sea <= r
+    // Elimina todos los nodos libro cuyo rating promedio sea <= r
     void borrar_ratings(float r);
 
     // Analiza y muestra los ids que cumplen la condición de precursores
-    void Precursores();
+    void precursores();
 };
 
 #endif

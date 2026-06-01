@@ -1,5 +1,8 @@
 #include "../include/TreeADT.h"
 
+
+//Pasamos como parametro un vector que será llenado con todos los nodos en "preorder"
+
 void Tree::preorderPositions(Node* v, std::vector<Position>& pos) const {
     if (v == nullptr) return;
     pos.push_back(Position(v));
@@ -8,9 +11,10 @@ void Tree::preorderPositions(Node* v, std::vector<Position>& pos) const {
     }
 }
 
+// Pasamos un nodo y eliminamos de forma recursiva todos sus hijos, eliminando el subarbol asociado
 int Tree::removeSubtree(Node* v) {
     if (v == nullptr) return 0;
-    int count = 1; // contar este nodo
+    int count = 1; 
     for (Node* child : v->children) {
         count += removeSubtree(child);
     }
@@ -47,6 +51,8 @@ std::vector<std::string> Tree::elements() const {
     return elems;
 }
 
+//Retorno el vector de posiciones en preorder
+
 std::vector<Position> Tree::positions() const {
     std::vector<Position> pos;
     preorderPositions(_root, pos);
@@ -61,6 +67,8 @@ Position Tree::parent(Position p) const {
     return Position(p.getNode()->parent);
 }
 
+
+//Obtenemos todos los hijos de un nodo "p", devolviendo un vector con los nodos correspondientes 
 std::vector<Position> Tree::children(Position p) const {
     std::vector<Position> childPositions;
     for (Node* child : p.getNode()->children) {
@@ -95,6 +103,7 @@ Position Tree::addRoot(std::string e) {
     return Position(_root);
 }
 
+//Creamos un nuevo nodo y lo conectamos con el nodo "p" dado y le asignamos el valor "e"
 Position Tree::addChild(Position p, std::string e) {
     Node* v = p.getNode();
     Node* child = new Node(e, v);
@@ -103,6 +112,8 @@ Position Tree::addChild(Position p, std::string e) {
     arbol_modificado = true;
     return Position(child);
 }
+
+//Elimina un nodo "p" y todos sus hijos
 
 void Tree::remove(Position p) {
     Node* v = p.getNode();
@@ -129,6 +140,7 @@ void Tree::remove(Position p) {
     arbol_modificado = true;
 }
 
+//Actualizamos el vector de posiciones del arbol, en caso de que haya sido modificado
 void Tree::actualizarArbol() {
     if (arbol_modificado) {
         posiciones = positions();

@@ -16,9 +16,7 @@ void BookTree::listar() const {
     }
 }
 
-// Proposito: Elimina todos los nodos libro cuyo rating sea <= r
-// Parametro:
-//    - r: float, Libros con rating <= r seran eliminados
+//Elimina todos los nodos libro cuyo rating sea <= r
 void BookTree::borrar_ratings(float r) {
     // Obtener todas las posiciones del arbol
     std::vector<Position> pos = positions();
@@ -47,9 +45,12 @@ void BookTree::borrar_ratings(float r) {
     }
 }
 
-void BookTree::Precursores() {
+//Lista los IDs de los libros principales que cumplan con la condicion de precursores
+void BookTree::precursores() {
+  //Actualizamos el arbol en caso de haber sido modificado
     actualizarArbol();
-    
+
+    //Buscamos el nodo correspondiente a cada libro
     for(Position p : posiciones){
         if(p.element() == "ID"){
             std::string id = children(p)[0].element();
@@ -72,6 +73,7 @@ void BookTree::Precursores() {
                         for(Position atribute : children(book)){
                             if(atribute.element() == "year"){
                                 std::string similarYear = children(atribute)[0].element();
+				// En caso de no encontrar informacion, no podemos asegurar la condicion de precursor
                                 if(similarYear == "" || year == ""){
                                     esPrecursorFlag = false;
                                     break;
@@ -87,6 +89,7 @@ void BookTree::Precursores() {
                     if(!esPrecursorFlag) break;
                 }
             }
+	    //Imprimimos el id que cumpla con las condiciones
             if(esPrecursorFlag){
                 std::cout << id << std::endl;
             }
